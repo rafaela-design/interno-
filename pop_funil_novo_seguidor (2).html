@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POP — Funil do Novo Seguidor | CresciMente Negócios</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #1B4332;
+    --brand-mid: #2D6A4F;
+    --brand-light: #D8F3DC;
+    --brand-soft: #F0FAF3;
+    --accent: #B7791F;
+    --accent-light: #FEFCBF;
+    --danger: #9B2335;
+    --danger-light: #FFF5F5;
+    --warn: #744210;
+    --warn-light: #FFFAF0;
+    --ink: #1A1A1A;
+    --ink-mid: #4A4A4A;
+    --ink-soft: #6B7280;
+    --line: #E5E7EB;
+    --line-soft: #F3F4F6;
+    --white: #FFFFFF;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F7F8F5;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* COVER */
+  .cover {
+    background: var(--brand);
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.04);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.03);
+  }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px; font-weight: 500;
+    color: rgba(255,255,255,.8);
+    letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .cover-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px; font-weight: 300;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .cover-title em { font-style: italic; color: #95D5A8; }
+  .cover-sub {
+    font-size: 14px; color: rgba(255,255,255,.65);
+    line-height: 1.6; max-width: 480px;
+    margin-bottom: 28px;
+  }
+  .cover-meta {
+    display: flex; flex-wrap: wrap; gap: 20px;
+  }
+  .cover-meta-item {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; color: rgba(255,255,255,.7);
+  }
+  .cover-meta-item span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #95D5A8; flex-shrink: 0;
+  }
+
+  /* NAV */
+  .nav-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+    padding: 0 40px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,.06);
+  }
+  .nav {
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 18px;
+    border: none; background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 400;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+  }
+  .nav-btn:hover { color: var(--brand); }
+  .nav-btn.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+    font-weight: 500;
+  }
+  .nav-chip {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--line-soft);
+    font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    transition: all .2s;
+  }
+  .nav-btn.active .nav-chip {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 32px 40px 60px;
+    max-width: 820px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* STEP CARD */
+  .step-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .step-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex; align-items: flex-start; gap: 14px;
+    background: var(--white);
+  }
+  .step-badge {
+    min-width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--brand-light);
+    color: var(--brand);
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Fraunces', serif;
+  }
+  .step-header-text {}
+  .step-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+  .step-obj { font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+  .step-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* SECTION LABEL */
+  .sec-label {
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .07em;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sec-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--line);
+  }
+
+  /* FORMULA */
+  .formula {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .formula-header {
+    padding: 9px 14px;
+    background: var(--brand-soft);
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .06em;
+    color: var(--brand);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .formula-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .formula-row { display: flex; gap: 12px; align-items: flex-start; }
+  .formula-n {
+    min-width: 24px; height: 24px; border-radius: 50%;
+    background: var(--brand-light); color: var(--brand);
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .formula-row-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--ink-soft); margin-bottom: 3px;
+  }
+  .formula-row-text {
+    font-size: 13px; color: var(--ink); line-height: 1.6;
+    font-style: italic;
+  }
+  .formula-row-text strong { font-style: normal; font-weight: 600; }
+  .formula-divider { height: 1px; background: var(--line-soft); margin: 0 -14px; }
+
+  /* SCRIPT BOX */
+  .script-box {
+    background: var(--brand-soft);
+    border: 1px solid #C3E6CB;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .script-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--brand-mid);
+    margin-bottom: 7px; display: flex; align-items: center; gap: 5px;
+  }
+  .script-text {
+    font-size: 13px; color: var(--ink);
+    line-height: 1.7; font-style: italic;
+  }
+  .script-text strong { font-style: normal; font-weight: 600; }
+
+  /* SCRIPT VARIANT */
+  .script-variant {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .script-variant-header {
+    padding: 8px 12px;
+    background: var(--line-soft);
+    font-size: 11px; font-weight: 600;
+    color: var(--ink-mid);
+    display: flex; align-items: center; gap: 7px;
+    border-bottom: 1px solid var(--line);
+  }
+  .script-variant-body { padding: 12px 14px; }
+  .when-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #EFF6FF; border: 1px solid #BFDBFE;
+    border-radius: 20px; padding: 3px 10px;
+    font-size: 11px; font-weight: 500; color: #1D4ED8;
+    margin-bottom: 8px;
+  }
+
+  /* QUESTIONS */
+  .q-list { display: flex; flex-direction: column; gap: 6px; }
+  .q-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px;
+    background: var(--line-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .q-n {
+    min-width: 22px; height: 22px; border-radius: 50%;
+    background: #DBEAFE; color: #1E40AF;
+    font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .q-main { font-size: 13px; color: var(--ink); line-height: 1.55; font-style: italic; }
+  .q-main strong { font-style: normal; font-weight: 600; }
+  .q-hint { font-size: 11px; color: var(--ink-soft); margin-top: 4px; line-height: 1.4; }
+
+  /* BRANCHES */
+  .branch-list { display: flex; flex-direction: column; gap: 8px; }
+  .branch {
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    border-left: 3px solid transparent;
+  }
+  .branch.green { background: #F0FFF4; border-color: #38A169; }
+  .branch.yellow { background: var(--warn-light); border-color: #D69E2E; }
+  .branch.red { background: var(--danger-light); border-color: var(--danger); }
+  .branch-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; margin-bottom: 5px;
+  }
+  .branch.green .branch-label { color: #276749; }
+  .branch.yellow .branch-label { color: #744210; }
+  .branch.red .branch-label { color: var(--danger); }
+  .branch-text { font-size: 12px; line-height: 1.6; }
+  .branch.green .branch-text { color: #2F855A; }
+  .branch.yellow .branch-text { color: #744210; }
+  .branch.red .branch-text { color: #742A2A; }
+  .branch-script { font-style: italic; margin-top: 5px; display: block; }
+
+  /* ALERTS */
+  .tip {
+    background: #F0FFF4; border: 1px solid #9AE6B4;
+    border-radius: var(--radius-sm); padding: 9px 13px;
+    font-size: 12px; color: #276749; line-height: 1.55;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .tip::before { content: '✓'; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .warn {
+    background: var(--warn-light); border: 1px solid #F6AD55;
+    border-radius: var(--radius-sm); padding: 9px 13px;
+    font-size: 12px; color: #744210; line-height: 1.55;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .warn::before { content: '!'; font-weight: 700; flex-shrink: 0; margin-top: 1px; width: 14px; height: 14px; background: #D69E2E; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+  .danger {
+    background: var(--danger-light); border: 1px solid #FEB2B2;
+    border-radius: var(--radius-sm); padding: 9px 13px;
+    font-size: 12px; color: #742A2A; line-height: 1.55;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .danger::before { content: '✕'; font-weight: 700; flex-shrink: 0; color: var(--danger); margin-top: 1px; }
+
+  /* DESTINATION */
+  .destination {
+    background: var(--brand-light);
+    border: 1px solid #74C69D;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .dest-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--brand); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .dest-title { font-size: 13px; font-weight: 600; color: var(--brand); }
+  .dest-sub { font-size: 11px; color: var(--brand-mid); margin-top: 2px; }
+
+  /* CLASSIF */
+  .classif-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 6px;
+  }
+  .classif-item {
+    background: var(--line-soft); border: 1px solid var(--line);
+    border-radius: var(--radius-sm); padding: 9px 11px;
+    font-size: 12px; color: var(--ink-mid); line-height: 1.4;
+    display: flex; align-items: flex-start; gap: 7px;
+  }
+  .classif-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--brand-mid); flex-shrink: 0; margin-top: 4px;
+  }
+
+  /* REGRAS */
+  .regras-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .regra {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: var(--radius-sm); padding: 11px 13px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .regra-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--brand-light); color: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .regra-title { font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .regra-text { font-size: 11px; color: var(--ink-soft); line-height: 1.5; }
+
+  /* HANDOFF TABLE */
+  .handoff-list { display: flex; flex-direction: column; gap: 6px; }
+  .handoff-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 9px 12px;
+    background: var(--line-soft); border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .handoff-icon {
+    width: 22px; height: 22px; border-radius: 5px;
+    background: var(--brand-light); color: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0; margin-top: 1px;
+  }
+  .handoff-label { font-size: 12px; font-weight: 500; color: var(--ink); }
+  .handoff-hint { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+
+  @media (max-width: 600px) {
+    .cover { padding: 32px 20px 28px; }
+    .cover-title { font-size: 24px; }
+    .nav-wrap { padding: 0 12px; }
+    .content { padding: 24px 16px 48px; }
+    .regras-grid { grid-template-columns: 1fr; }
+    .classif-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-badge">📋 POP — Social Seller</div>
+  <div class="cover-title">Funil do <em>Novo Seguidor</em></div>
+  <div class="cover-sub">Procedimento operacional para transformar novo seguidor em lead qualificada e encaminhar ao WhatsApp para fechamento.</div>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><span></span>Canal: Direct do Instagram</div>
+    <div class="cover-meta-item"><span></span>Destino: WhatsApp → Closer</div>
+    <div class="cover-meta-item"><span></span>Iniciar em até 24h após o follow</div>
+    <div class="cover-meta-item"><span></span>CresciMente Negócios</div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav">
+    <button class="nav-btn active" onclick="show('s1', this)"><span class="nav-chip">S1</span>Conexão</button>
+    <button class="nav-btn" onclick="show('s2', this)"><span class="nav-chip">S2</span>Momento</button>
+    <button class="nav-btn" onclick="show('s3', this)"><span class="nav-chip">S3</span>Dor</button>
+    <button class="nav-btn" onclick="show('s4', this)"><span class="nav-chip">S4</span>Estrutura</button>
+    <button class="nav-btn" onclick="show('s5', this)"><span class="nav-chip">S5</span>Urgência</button>
+    <button class="nav-btn" onclick="show('s6', this)"><span class="nav-chip">S6</span>WhatsApp</button>
+    <button class="nav-btn" onclick="show('s7', this)"><span class="nav-chip">S7</span>Handoff</button>
+    <button class="nav-btn" onclick="show('regras', this)"><span class="nav-chip">✓</span>Regras</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- S1 -->
+  <div id="panel-s1" class="panel active">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge">S1</div>
+        <div class="step-header-text">
+          <div class="step-title">Conexão e rapport</div>
+          <div class="step-obj">Objetivo: quebrar o gelo e entender o momento da empresária — antes de mandar a mensagem, olha o perfil dela</div>
+        </div>
+      </div>
+      <div class="step-body">
+
+        <div class="sec-label">Antes de escrever — leia o perfil dela</div>
+
+        <div class="script-variant">
+          <div class="script-variant-header">
+            👁️ Opção A — perfil não deixa claro se tem negócio
+          </div>
+          <div class="script-variant-body">
+            <div class="when-pill">Quando usar: bio vaga, sem produto/serviço visível, conta pessoal ou nova</div>
+            <div class="script-box">
+              <div class="script-label">💬 Script</div>
+              <div class="script-text">"Oi <strong>[nome]</strong>! Vi que você chegou por aqui — seja muito bem-vinda, espero de verdade contribuir com o seu crescimento 😊<br><br>Me conta: hoje você está começando do zero ou já tem um negócio em funcionamento?"</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="script-variant">
+          <div class="script-variant-header">
+            👀 Opção B — perfil já mostra que tem negócio ativo
+          </div>
+          <div class="script-variant-body">
+            <div class="when-pill">Quando usar: bio com serviço/produto, posts sobre o negócio, link na bio, stories de atendimento</div>
+            <div class="script-box">
+              <div class="script-label">💬 Script</div>
+              <div class="script-text">"Oi <strong>[nome]</strong>! Vi que você chegou por aqui — seja muito bem-vinda, espero de verdade contribuir com o seu crescimento 😊<br><br>Me conta: hoje você faz tudo sozinha ou já tem alguém te ajudando no negócio?"</div>
+            </div>
+            <div class="tip" style="margin-top:8px">Essa pergunta já revela se ela está sobrecarregada na operação — que é exatamente a dor da persona ideal da CresciMente.</div>
+          </div>
+        </div>
+
+        <div class="sec-label">Se não responder ou resposta vaga — 1 tentativa apenas</div>
+        <div class="script-box">
+          <div class="script-label">🔄 Script de reativação</div>
+          <div class="script-text">"E hoje você trabalha mais com atendimentos ou quer estruturar algo maior no seu negócio?"</div>
+        </div>
+
+        <div class="danger">Se não responder após a segunda mensagem — encerra. Não insiste. Marca como lead fria para reativar em outro momento.</div>
+        <div class="tip">Se respondeu qualquer coisa — avança para S2.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div id="panel-s2" class="panel">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge">S2</div>
+        <div class="step-header-text">
+          <div class="step-title">Momento da lead</div>
+          <div class="step-obj">Objetivo: validar o que você já viu no perfil e direcionar com uma pergunta certeira</div>
+        </div>
+      </div>
+      <div class="step-body">
+
+        <div class="sec-label">Fórmula da abordagem</div>
+        <div class="formula">
+          <div class="formula-header">⚡ Afirmar + validar + perguntar</div>
+          <div class="formula-body">
+            <div class="formula-row">
+              <div class="formula-n">1</div>
+              <div>
+                <div class="formula-row-label">Afirma o que viu no perfil</div>
+                <div class="formula-row-text">"Vi que você <strong>[descreve o negócio/serviço dela com as palavras do perfil]</strong>…"</div>
+              </div>
+            </div>
+            <div class="formula-divider"></div>
+            <div class="formula-row">
+              <div class="formula-n">2</div>
+              <div>
+                <div class="formula-row-label">Valida o que ela faz</div>
+                <div class="formula-row-text">"…que legal, <strong>[elogio curto e genuíno sobre o negócio]</strong>…"</div>
+              </div>
+            </div>
+            <div class="formula-divider"></div>
+            <div class="formula-row">
+              <div class="formula-n">3</div>
+              <div>
+                <div class="formula-row-label">Faz uma pergunta de direcionamento</div>
+                <div class="formula-row-text">"…me conta: <strong>[pergunta sobre organização, vendas ou rotina]</strong>?"</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-label">Exemplos por tipo de negócio</div>
+
+        <div class="script-variant">
+          <div class="script-variant-header">✂️ Estética, beleza, saúde</div>
+          <div class="script-variant-body">
+            <div class="script-text" style="font-style:italic; font-size:13px; line-height:1.7; color:var(--ink)">"Vi que você trabalha com <strong>[estética/cabelo/nutrição...]</strong> — que serviço importante! Me conta: hoje sua agenda está sempre cheia ou ainda tem meses que ficam no sufoco?"</div>
+          </div>
+        </div>
+        <div class="script-variant">
+          <div class="script-variant-header">👗 Varejo, loja, moda</div>
+          <div class="script-variant-body">
+            <div class="script-text" style="font-style:italic; font-size:13px; line-height:1.7; color:var(--ink)">"Vi que você tem uma loja de <strong>[segmento]</strong> — adorei! Me conta: hoje você consegue prever quanto vai vender no mês ou cada semana é uma surpresa?"</div>
+          </div>
+        </div>
+        <div class="script-variant">
+          <div class="script-variant-header">💻 Serviços, consultoria, agência</div>
+          <div class="script-variant-body">
+            <div class="script-text" style="font-style:italic; font-size:13px; line-height:1.7; color:var(--ink)">"Vi que você trabalha com <strong>[serviço]</strong> — área que está crescendo demais! Me conta: hoje você tem clientes fixos todo mês ou ainda vive de projetos avulsos?"</div>
+          </div>
+        </div>
+        <div class="script-variant">
+          <div class="script-variant-header">🍴 Alimentação, artesanato, serviços domésticos</div>
+          <div class="script-variant-body">
+            <div class="script-text" style="font-style:italic; font-size:13px; line-height:1.7; color:var(--ink)">"Vi que você trabalha com <strong>[serviço/produto]</strong> — que negócio com potencial! Me conta: hoje você já tem uma precificação definida ou ainda cobra no feeling?"</div>
+          </div>
+        </div>
+
+        <div class="sec-label">Perguntas de aprofundamento — conforme a resposta (1 por vez)</div>
+        <div class="q-list">
+          <div class="q-item">
+            <div class="q-n">A</div>
+            <div>
+              <div class="q-main">"Você tem uma rotina definida no negócio ou ainda está tudo na sua cabeça?"</div>
+              <div class="q-hint">Revela se tem processo ou se ela é a operação inteira.</div>
+            </div>
+          </div>
+          <div class="q-item">
+            <div class="q-n">B</div>
+            <div>
+              <div class="q-main">"Você sabe quanto o seu negócio precisa faturar todo mês para pagar as contas e ainda sobrar?"</div>
+              <div class="q-hint">Testa clareza financeira — uma das principais dores da persona da CresciMente.</div>
+            </div>
+          </div>
+          <div class="q-item">
+            <div class="q-n">C</div>
+            <div>
+              <div class="q-main">"Você já investiu em algum treinamento ou consultoria para o seu negócio?"</div>
+              <div class="q-hint">Indica maturidade e disposição para investir em solução.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="warn">Se em qualquer resposta ela já revelar a dor principal — vai direto para S3. Não precisa terminar todas as perguntas.</div>
+
+        <div class="sec-label">Classificação após S2</div>
+        <div class="classif-grid">
+          <div class="classif-item"><div class="classif-dot"></div>Começando — sem clareza de produto ou cliente</div>
+          <div class="classif-item"><div class="classif-dot"></div>Vende, mas irregular — sem previsibilidade</div>
+          <div class="classif-item"><div class="classif-dot"></div>Negócio ativo — mas tudo depende dela</div>
+          <div class="classif-item"><div class="classif-dot"></div>Fatura, mas sem clareza financeira</div>
+          <div class="classif-item"><div class="classif-dot"></div>Tem equipe — mas sem processos definidos</div>
+          <div class="classif-item"><div class="classif-dot"></div>Estruturada — quer escalar com consistência</div>
+        </div>
+
+        <div class="tip">Qualquer perfil com negócio ativo — mesmo desorganizado — é lead com potencial. Avança para S3. Só encerra quem está no zero absoluto, sem produto ou cliente ainda.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div id="panel-s3" class="panel">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge">S3</div>
+        <div class="step-header-text">
+          <div class="step-title">Dor e desafio</div>
+          <div class="step-obj">Objetivo: identificar o principal problema que trava o negócio dela</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="sec-label">Pergunta principal</div>
+        <div class="script-box">
+          <div class="script-label">💬 Script</div>
+          <div class="script-text">"Qual é seu maior desafio hoje para vender ou fazer o negócio crescer do jeito que você quer?"</div>
+        </div>
+
+        <div class="script-box">
+          <div class="script-label">➡️ Segunda pergunta — após ela responder</div>
+          <div class="script-text">"E o que você já tentou fazer para resolver isso?"</div>
+        </div>
+
+        <div class="sec-label">Se resposta for vaga ou genérica</div>
+        <div class="script-box">
+          <div class="script-label">🔍 Pergunta de especificação</div>
+          <div class="script-text">"Hoje o problema está mais em produto, em encontrar o público certo ou em fechar as vendas?"</div>
+        </div>
+
+        <div class="tip">Anote a dor com as palavras exatas que ela usou. Isso vai ser espelhado nas etapas seguintes e no handoff para o Closer.</div>
+        <div class="warn">Não ofereça solução aqui. Só escuta e aprofunda. Quem resolve é o Closer no WhatsApp.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div id="panel-s4" class="panel">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge">S4</div>
+        <div class="step-header-text">
+          <div class="step-title">Estrutura financeira</div>
+          <div class="step-obj">Objetivo: entender o valor do que ela vende e o volume real de vendas no mês</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="sec-label">Sequência de perguntas — 1 por vez, aguarda resposta</div>
+        <div class="q-list">
+          <div class="q-item">
+            <div class="q-n">1</div>
+            <div>
+              <div class="q-main">"Hoje qual é o valor do seu <strong>[serviço / atendimento / produto principal]</strong>?"</div>
+              <div class="q-hint">Adapta o termo ao negócio dela — use o que ela mesma usou nas respostas anteriores.</div>
+            </div>
+          </div>
+          <div class="q-item">
+            <div class="q-n">2</div>
+            <div>
+              <div class="q-main">"E nos últimos 30 dias, quantos <strong>[serviços / atendimentos / vendas]</strong> você fechou?"</div>
+              <div class="q-hint">Mesma lógica — usa o termo do negócio dela, não um genérico.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="warn">Não comenta o valor que ela informou — nem para elogiar nem para questionar. Só registra e faz a segunda pergunta.</div>
+
+        <div class="sec-label">Leitura do perfil com base nas respostas</div>
+        <div class="branch-list">
+          <div class="branch green">
+            <div class="branch-label">✓ Perfil ideal — avança para S5</div>
+            <div class="branch-text">Tem ticket definido, fechou vendas nos últimos 30 dias, mas sente que poderia crescer mais ou que o resultado não condiz com o esforço.<span class="branch-script">→ Avança direto para S5.</span></div>
+          </div>
+          <div class="branch yellow">
+            <div class="branch-label">! Perfil médio — aprofunda antes de avançar</div>
+            <div class="branch-text">Vendeu pouco, preço muito baixo ou resposta vaga. Faz mais uma pergunta:<span class="branch-script">"E qual seria o faturamento ideal pra você todo mês?"</span></div>
+          </div>
+          <div class="branch red">
+            <div class="branch-label">✕ Sem perfil — encerra com elegância</div>
+            <div class="branch-text">Ainda não tem produto definido, não vendeu nada ou está no zero absoluto.<span class="branch-script">"Entendi! Pelo que você me contou, você ainda está estruturando o negócio. O nosso trabalho é para quem já está em operação e quer organizar para crescer. Quando você estiver nessa fase, seria incrível trabalhar juntas 😊"</span></div>
+          </div>
+        </div>
+
+        <div class="tip">Perfil ideal da CresciMente: fatura, mas o resultado não sobra — trabalha muito e não vê a cor do dinheiro. Qualquer variação disso com negócio ativo avança para S5.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div id="panel-s5" class="panel">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge">S5</div>
+        <div class="step-header-text">
+          <div class="step-title">Urgência e intenção</div>
+          <div class="step-obj">Objetivo: medir se ela está pronta para dar o próximo passo agora</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="script-box">
+          <div class="script-label">💬 Script de transição</div>
+          <div class="script-text">"Faz sentido você conversar com nossa estrategista para analisar esse desafio e te dar um direcionamento específico pro seu negócio?"</div>
+        </div>
+
+        <div class="sec-label">Leitura da resposta</div>
+        <div class="branch-list">
+          <div class="branch green">
+            <div class="branch-label">✓ Urgência alta — "sim", "quero", "como funciona?"</div>
+            <div class="branch-text">Segue direto para S6. Não explique mais sobre o programa aqui.</div>
+          </div>
+          <div class="branch yellow">
+            <div class="branch-label">! Urgência média — "talvez", "vou pensar"</div>
+            <div class="branch-text">"Entendo! É uma decisão importante. O que ainda te trava para dar esse passo?"<span class="branch-script">→ Depois de responder, volta para S6.</span></div>
+          </div>
+          <div class="branch red">
+            <div class="branch-label">✕ Sem intenção — "depois vejo", "não agora"</div>
+            <div class="branch-text">"Tudo bem! Fico por aqui se precisar. Continue acompanhando o conteúdo — tem muita coisa boa chegando 😊"<span class="branch-script">→ Marca para follow-up em 15 dias.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div id="panel-s6" class="panel">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge">S6</div>
+        <div class="step-header-text">
+          <div class="step-title">Coleta do WhatsApp</div>
+          <div class="step-obj">Objetivo: tirar do Instagram e levar para o canal de fechamento</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="script-box">
+          <div class="script-label">💬 Script</div>
+          <div class="script-text">"Perfeito 😊 Me passa seu WhatsApp e me diz: você prefere conversar de manhã ou de tarde? Assim já organizo o melhor horário pra você."</div>
+        </div>
+
+        <div class="tip">Oferecer escolha de horário aumenta a taxa de resposta — ela sente que tem controle sobre o próximo passo.</div>
+        <div class="danger">Não mande link de formulário nem link de agendamento aqui. Primeiro coleta o número, depois o Closer organiza.</div>
+
+        <div class="destination">
+          <div class="dest-icon">📲</div>
+          <div>
+            <div class="dest-title">Lead passa para o WhatsApp</div>
+            <div class="dest-sub">Social Seller registra: nome · dor principal · classificação · preferência de horário</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div id="panel-s7" class="panel">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge">S7</div>
+        <div class="step-header-text">
+          <div class="step-title">Handoff — encaminhamento para o Closer</div>
+          <div class="step-obj">Objetivo: confirmar o encaminhamento e gerar expectativa positiva</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="script-box">
+          <div class="script-label">💬 Script de encerramento no direct</div>
+          <div class="script-text">"Perfeito, <strong>[nome]</strong>! Vou passar seu contato para nossa estrategista. Ela vai analisar seu momento e te dar um direcionamento direto sobre <strong>[repete a dor com as palavras dela]</strong>. Em breve você recebe uma mensagem no WhatsApp com a confirmação 😊"</div>
+        </div>
+
+        <div class="sec-label">O que a Social Seller registra e passa para o Closer</div>
+        <div class="handoff-list">
+          <div class="handoff-item">
+            <div class="handoff-icon">👤</div>
+            <div>
+              <div class="handoff-label">Nome completo e @ do Instagram</div>
+            </div>
+          </div>
+          <div class="handoff-item">
+            <div class="handoff-icon">🏷</div>
+            <div>
+              <div class="handoff-label">Tipo de negócio e segmento</div>
+              <div class="handoff-hint">Ex: salão de beleza, loja de roupas, consultoria de RH</div>
+            </div>
+          </div>
+          <div class="handoff-item">
+            <div class="handoff-icon">📊</div>
+            <div>
+              <div class="handoff-label">Classificação do perfil</div>
+              <div class="handoff-hint">Começando / Vende mas irregular / Negócio ativo mas desorganizado / Fatura sem clareza financeira / Tem equipe sem processo / Quer escalar</div>
+            </div>
+          </div>
+          <div class="handoff-item">
+            <div class="handoff-icon">🔥</div>
+            <div>
+              <div class="handoff-label">Dor principal — com as palavras exatas que ela usou</div>
+              <div class="handoff-hint">Ex: "disse que trabalha muito e não vê sobrar nada no final do mês"</div>
+            </div>
+          </div>
+          <div class="handoff-item">
+            <div class="handoff-icon">💰</div>
+            <div>
+              <div class="handoff-label">Valor do serviço/produto e volume de vendas nos últimos 30 dias</div>
+            </div>
+          </div>
+          <div class="handoff-item">
+            <div class="handoff-icon">🕐</div>
+            <div>
+              <div class="handoff-label">Preferência de horário: manhã ou tarde</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip">Quanto mais contexto o Closer receber, mais personalizado e certeiro vai ser o fechamento. O handoff é tão importante quanto a qualificação.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGRAS -->
+  <div id="panel-regras" class="panel">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-badge" style="font-size:16px">✓</div>
+        <div class="step-header-text">
+          <div class="step-title">Regras operacionais da Social Seller</div>
+          <div class="step-obj">Aplicar em todo e qualquer fluxo de direct — sem exceção</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="regras-grid">
+          <div class="regra">
+            <div class="regra-icon">1️⃣</div>
+            <div>
+              <div class="regra-title">1 pergunta por vez</div>
+              <div class="regra-text">Aguarda a resposta antes de enviar a próxima. Direct é conversa, não formulário.</div>
+            </div>
+          </div>
+          <div class="regra">
+            <div class="regra-icon">🪞</div>
+            <div>
+              <div class="regra-title">Espelha a linguagem dela</div>
+              <div class="regra-text">Usa as palavras que ela mesma usou para descrever a dor. Cria conexão e confiança.</div>
+            </div>
+          </div>
+          <div class="regra">
+            <div class="regra-icon">👂</div>
+            <div>
+              <div class="regra-title">Diagnostica antes de vender</div>
+              <div class="regra-text">Nenhuma menção a produto, preço ou programa antes de S5. Primeiro entende, depois apresenta.</div>
+            </div>
+          </div>
+          <div class="regra">
+            <div class="regra-icon">🧭</div>
+            <div>
+              <div class="regra-title">Conduz com firmeza</div>
+              <div class="regra-text">Não deixa a conversa morrer. Faz a próxima pergunta. Mantém o ritmo sem parecer robótica.</div>
+            </div>
+          </div>
+          <div class="regra">
+            <div class="regra-icon">⭐</div>
+            <div>
+              <div class="regra-title">Prioriza perfil com potencial</div>
+              <div class="regra-text">Investe mais tempo em quem tem negócio ativo. Encerra rápido e com elegância quem não tem perfil.</div>
+            </div>
+          </div>
+          <div class="regra">
+            <div class="regra-icon">⚡</div>
+            <div>
+              <div class="regra-title">Responde em até 2h</div>
+              <div class="regra-text">Velocidade de resposta impacta diretamente a taxa de conversão. Lead quente esfria rápido.</div>
+            </div>
+          </div>
+          <div class="regra">
+            <div class="regra-icon">🚫</div>
+            <div>
+              <div class="regra-title">Nunca copia e cola igual</div>
+              <div class="regra-text">Os scripts são base, não texto fixo. Adapta o tom ao jeito que a pessoa escreve.</div>
+            </div>
+          </div>
+          <div class="regra">
+            <div class="regra-icon">📋</div>
+            <div>
+              <div class="regra-title">Registra tudo no handoff</div>
+              <div class="regra-text">Nome, negócio, dor, classificação, ticket, horário. Sem registro completo, o Closer começa do zero.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
